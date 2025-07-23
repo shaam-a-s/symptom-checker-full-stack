@@ -1,0 +1,16 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* For react-phone-number-input */
+.PhoneInputInput {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+}
+.PhoneInputCountry {
+    background-color: #334155; /* slate-700 */
+    border-radius: 0.5rem;
+    padding: 0 0.5rem;
+}

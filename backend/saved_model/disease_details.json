@@ -1,0 +1,182 @@
+{
+    "Fungal infection": {
+        "description": "A common skin condition caused by a fungus. It can cause itching, rashes, and other changes to the skin's appearance.",
+        "gender": "Any"
+    },
+    "Allergy": {
+        "description": "An exaggerated immune response to substances that are generally not harmful. Symptoms can range from mild sneezing to severe anaphylaxis.",
+        "gender": "Any"
+    },
+    "GERD": {
+        "description": "Gastroesophageal reflux disease (GERD) is a long-term condition where stomach acid comes back up into the esophagus.",
+        "gender": "Any"
+    },
+    "Chronic cholestasis": {
+        "description": "A condition where the flow of bile from the liver is slowed or blocked. Bile is a fluid that helps with digestion.",
+        "gender": "Any"
+    },
+    "Drug Reaction": {
+        "description": "An adverse effect of a drug that is unintended. It can range from a mild rash to a life-threatening reaction.",
+        "gender": "Any"
+    },
+    "Peptic ulcer diseae": {
+        "description": "A sore that develops on the lining of the esophagus, stomach, or small intestine.",
+        "gender": "Any"
+    },
+    "AIDS": {
+        "description": "Acquired immunodeficiency syndrome (AIDS) is a chronic, potentially life-threatening condition caused by the human immunodeficiency virus (HIV).",
+        "gender": "Any"
+    },
+    "Diabetes": {
+        "description": "A group of diseases that result in too much sugar in the blood (high blood glucose).",
+        "gender": "Any"
+    },
+    "Gastroenteritis": {
+        "description": "An intestinal infection marked by watery diarrhea, abdominal cramps, nausea or vomiting, and sometimes fever.",
+        "gender": "Any"
+    },
+    "Bronchial Asthma": {
+        "description": "A chronic disease of the airways that makes breathing difficult. It causes inflammation and narrowing of the tubes that carry air to the lungs.",
+        "gender": "Any"
+    },
+    "Hypertension": {
+        "description": "A condition in which the force of the blood against the artery walls is too high.",
+        "gender": "Any"
+    },
+    "Migraine": {
+        "description": "A type of headache that can cause severe throbbing pain or a pulsing sensation, usually on one side of the head.",
+        "gender": "Any"
+    },
+    "Cervical spondylosis": {
+        "description": "Age-related wear and tear affecting the spinal disks in your neck.",
+        "gender": "Any"
+    },
+    "Paralysis (brain hemorrhage)": {
+        "description": "The loss of the ability to move some or all of your body, often caused by a stroke resulting from bleeding in the brain.",
+        "gender": "Any"
+    },
+    "Jaundice": {
+        "description": "A medical condition with yellowing of the skin or whites of the eyes, arising from excess of the pigment bilirubin.",
+        "gender": "Any"
+    },
+    "Malaria": {
+        "description": "A disease caused by a parasite, transmitted by the bite of infected mosquitoes. It causes high fevers, shaking chills, and flu-like illness.",
+        "gender": "Any"
+    },
+    "Chicken pox": {
+        "description": "A highly contagious viral infection causing an itchy, blister-like rash on the skin.",
+        "gender": "Any"
+    },
+    "Dengue": {
+        "description": "A mosquito-borne viral disease occurring in tropical and subtropical areas. Symptoms include high fever, headache, vomiting, muscle and joint pains, and a characteristic skin rash.",
+        "gender": "Any"
+    },
+    "Typhoid": {
+        "description": "A bacterial infection that can lead to a high fever, diarrhea, and vomiting. It can be fatal.",
+        "gender": "Any"
+    },
+    "hepatitis A": {
+        "description": "A highly contagious liver infection caused by the hepatitis A virus.",
+        "gender": "Any"
+    },
+    "Hepatitis B": {
+        "description": "A serious liver infection caused by the hepatitis B virus that's easily preventable by a vaccine.",
+        "gender": "Any"
+    },
+    "Hepatitis C": {
+        "description": "An infection caused by a virus that attacks the liver and leads to inflammation.",
+        "gender": "Any"
+    },
+    "Hepatitis D": {
+        "description": "A serious liver disease caused by the hepatitis D virus (HDV).",
+        "gender": "Any"
+    },
+    "Hepatitis E": {
+        "description": "A liver disease caused by the hepatitis E virus (HEV).",
+        "gender": "Any"
+    },
+    "Alcoholic hepatitis": {
+        "description": "Liver inflammation caused by drinking too much alcohol.",
+        "gender": "Any"
+    },
+    "Tuberculosis": {
+        "description": "An infectious bacterial disease characterized by the growth of nodules (tubercles) in the tissues, especially the lungs.",
+        "gender": "Any"
+    },
+    "Common Cold": {
+        "description": "A mild viral infection of the nose and throat.",
+        "gender": "Any"
+    },
+    "Pneumonia": {
+        "description": "An infection that inflames air sacs in one or both lungs, which may fill with fluid.",
+        "gender": "Any"
+    },
+    "Dimorphic hemmorhoids(piles)": {
+        "description": "Swollen and inflamed veins in the rectum and anus that cause discomfort and bleeding.",
+        "gender": "Any"
+    },
+    "Heart attack": {
+        "description": "A serious medical emergency in which the blood supply to the heart is suddenly blocked, usually by a blood clot.",
+        "gender": "Any"
+    },
+    "Varicose veins": {
+        "description": "Gnarled, enlarged veins, most commonly appearing in the legs and feet.",
+        "gender": "Any"
+    },
+    "Hypothyroidism": {
+        "description": "A condition in which your thyroid gland doesn't produce enough of certain crucial hormones.",
+        "gender": "Female"
+    },
+    "Hyperthyroidism": {
+        "description": "The overproduction of a hormone by the butterfly-shaped gland in the neck (thyroid).",
+        "gender": "Female"
+    },
+    "Hypoglycemia": {
+        "description": "A condition in which your blood sugar (glucose) level is lower than normal.",
+        "gender": "Any"
+    },
+    "Osteoarthristis": {
+        "description": "The most common form of arthritis. It occurs when the protective cartilage that cushions the ends of your bones wears down over time.",
+        "gender": "Any"
+    },
+    "Arthritis": {
+        "description": "Inflammation of one or more of your joints.",
+        "gender": "Any"
+    },
+    "(vertigo) Paroymsal Positional Vertigo": {
+        "description": "A sudden sensation that you're spinning or that the inside of your head is spinning.",
+        "gender": "Any"
+    },
+    "Acne": {
+        "description": "A skin condition that occurs when your hair follicles become plugged with oil and dead skin cells.",
+        "gender": "Any"
+    },
+    "Urinary tract infection": {
+        "description": "An infection in any part of your urinary system \u2014 your kidneys, ureters, bladder and urethra.",
+        "gender": "Any"
+    },
+    "Psoriasis": {
+        "description": "A skin disease that causes red, itchy scaly patches, most commonly on the knees, elbows, trunk and scalp.",
+        "gender": "Any"
+    },
+    "Impetigo": {
+        "description": "A common and highly contagious skin infection that mainly affects infants and children. It usually appears as red sores on the face.",
+        "gender": "Any"
+    },
+    "Prostate Cancer": {
+        "description": "A cancer that occurs in the prostate, a small walnut-shaped gland in males that produces the seminal fluid.",
+        "gender": "Male"
+    },
+    "Ovarian Cancer": {
+        "description": "A cancer that begins in the ovaries. It often goes undetected until it has spread within the pelvis and abdomen.",
+        "gender": "Female"
+    },
+    "Endometriosis": {
+        "description": "An often painful disorder in which tissue similar to the tissue that normally lines the inside of your uterus \u2014 the endometrium \u2014 grows outside your uterus.",
+        "gender": "Female"
+    },
+    "Testicular Cancer": {
+        "description": "Cancer that develops in the testicles, a part of the male reproductive system.",
+        "gender": "Male"
+    }
+}

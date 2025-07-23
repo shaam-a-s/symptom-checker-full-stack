@@ -1,0 +1,9 @@
+Django
+djangorestframework
+django-cors-headers
+scikit-learn
+joblib
+numpy
+phonenumbers
+reportlab
+xhtml2pdf

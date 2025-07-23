@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Diagnosis Report</title>
+    <style>
+        @page {
+            size: a4 portrait;
+            @frame header_frame {
+                -pdf-frame-content: header_content;
+                left: 50pt; right: 50pt; top: 50pt; height: 50pt;
+            }
+            @frame content_frame {
+                left: 50pt; right: 50pt; top: 120pt; bottom: 80pt;
+            }
+            @frame footer_frame {
+                -pdf-frame-content: footer_content;
+                left: 50pt; right: 50pt; bottom: 40pt; height: 40pt;
+            }
+        }
+        body {
+            font-family: "Helvetica", "Arial", sans-serif;
+            color: #333;
+            font-size: 11pt;
+        }
+        #header_content {
+            text-align: left;
+            color: #0d9488; /* Teal-600 */
+        }
+        #header_content h1 {
+            margin: 0;
+            font-size: 24pt;
+            font-weight: bold;
+        }
+        #footer_content {
+            text-align: right;
+            font-size: 9pt;
+            color: #666;
+        }
+        .section-title {
+            font-size: 16pt;
+            color: #1e293b; /* Slate-800 */
+            border-bottom: 2px solid #0d9488;
+            padding-bottom: 5px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+        .patient-details-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .patient-details-table td {
+            padding: 8px 0;
+        }
+        .patient-details-table .label {
+            font-weight: bold;
+            width: 120px;
+            color: #475569; /* Slate-600 */
+        }
+        .prediction-card {
+            border: 1px solid #e2e8f0; /* Slate-200 */
+            border-left: 5px solid #0d9488;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+        }
+        .prediction-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 14pt;
+            color: #1e293b;
+        }
+        .prediction-card .probability {
+            font-weight: bold;
+            color: #0d9488;
+        }
+        .prediction-card p {
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+        .actions-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .actions-list li {
+            margin-bottom: 5px;
+        }
+        .disclaimer {
+            font-size: 9pt;
+            color: #777;
+            margin-top: 30px;
+            text-align: center;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="header_content">
+        <h1>AI Health Assistant</h1>
+    </div>
+    <div id="footer_content">
+        Page <pdf:pagenumber /> of <pdf:pagecount />
+    </div>
+
+    <h2 class="section-title">Confidential Diagnosis Report</h2>
+    
+    <table class="patient-details-table">
+        <tr>
+            <td class="label">Patient Name:</td>
+            <td>{{ patient.name }}</td>
+            <td class="label">Patient ID:</td>
+            <td>{{ patient.friendly_id }}</td>
+        </tr>
+        <tr>
+            <td class="label">Age:</td>
+            <td>{{ patient.age }}</td>
+            <td class="label">Gender:</td>
+            <td>{{ patient.gender }}</td>
+        </tr>
+    </table>
+
+    <h2 class="section-title">AI-Powered Analysis Results</h2>
+
+    {% for pred in predictions %}
+        <div class="prediction-card">
+            <h3>{{ pred.disease }} <span class="probability">({{ pred.probability }}% Probability)</span></h3>
+            <p><strong>Description:</strong> {{ pred.description }}</p>
+            <p><strong>Recommended Actions:</strong></p>
+            <ul class="actions-list">
+                {% for action in pred.actions %}
+                    <li>✓ {{ action }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+
+    <div class="disclaimer">
+        Disclaimer: This is an AI-powered estimation and not a substitute for professional medical advice. Always consult a qualified healthcare professional for any health concerns or before making any medical decisions.
+    </div>
+</body>
+</html>
