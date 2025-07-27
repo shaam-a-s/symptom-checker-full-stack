@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Search, User, Stethoscope, FileText, Activity, AlertTriangle, CheckCircle, Loader2, BrainCircuit, Heart, Wind, Bone, ShieldCheck, Mic, ArrowRight, RefreshCw, Home, ArrowLeft, Mail, Download, PlusCircle, XCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 
+// Ensure this API_URL is correct and does NOT have a trailing slash
 const API_URL = 'https://ai-health-backend-xlho.onrender.com/api';
 
 const AnimatedIcon = ({ icon: Icon, className }) => <Icon className={`transition-all duration-300 ease-in-out ${className}`} />;
@@ -68,11 +69,25 @@ export default function App() {
     const [patientHistory, setPatientHistory] = useState([]);
     const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
     const [isListening, setIsListening] = useState(false);
-    const [lookupQuery, setLookupQuery] = useState('');
+    const [lookupQuery, setLookupQuery] = useState(''); // Initial state is empty
     const [searchSuggestions, setSearchSuggestions] = useState([]);
     const [allSymptoms, setAllSymptoms] = useState([]);
     const [manualSymptomQuery, setManualSymptomQuery] = useState('');
     const [autocompleteSuggestion, setAutocompleteSuggestion] = useState('');
+
+    // Memoize fetchPatientHistory to make it stable for useEffect dependencies
+    const fetchPatientHistory = useCallback(async (pId) => {
+        if (!pId) return;
+        try {
+            const response = await fetch(`${API_URL}/patients/${pId}/history/`);
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Failed to fetch history.');
+            setPatientHistory(data);
+        } catch (err) {
+            console.error("Fetch history error:", err);
+            // Optionally, set an error state here if history is critical
+        }
+    }, [API_URL]); // Dependency: API_URL
 
     useEffect(() => {
         const fetchAllSymptoms = async () => {
@@ -82,10 +97,47 @@ export default function App() {
                 setAllSymptoms(data);
             } catch (err) {
                 console.error("Could not fetch symptom list", err);
+                // Optionally, set an error state here if symptom list is critical
             }
         };
         fetchAllSymptoms();
-    }, []);
+    }, [API_URL]); // Dependency: API_URL
+
+    // This useEffect is for patient lookup on initial load or refresh if a query is present
+    // It is now correctly placed inside the App component.
+    useEffect(() => {
+        const loadPatientFromQuery = async () => {
+            // Only try if on home screen (step 0), a lookup query exists, and no patient is currently loaded
+            if (step === 0 && lookupQuery && !patientDetails) {
+                setIsLoading(true);
+                setError(null);
+                try {
+                    const response = await fetch(`${API_URL}/patients/search/`, { // Use search endpoint
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ query: lookupQuery }), // Send lookupQuery as search term
+                    });
+                    const data = await response.json();
+                    if (!response.ok || data.length === 0) {
+                        throw new Error(data.error || 'Patient not found for lookup query.');
+                    }
+                    // Assuming search returns a list, take the first one or the most relevant
+                    const foundPatient = data[0];
+                    setPatientDetails(foundPatient);
+                    setPatient(foundPatient); // Populate patient form state with selected suggestion
+                    fetchPatientHistory(foundPatient.id);
+                    setStep(2); // Move to symptom input
+                } catch (err) {
+                    setError(err.message);
+                    console.error("Error loading patient from URL query:", err);
+                } finally {
+                    setIsLoading(false);
+                }
+            }
+        };
+
+        loadPatientFromQuery(); // Call the async function
+    }, [lookupQuery, patientDetails, step, fetchPatientHistory, API_URL, setPatient, setPatientDetails, setError, setIsLoading, setStep]); // Added all necessary dependencies
 
     const handleFormChange = (e) => setPatient({ ...patient, [e.target.name]: e.target.value });
     const handlePhoneChange = (value) => setPatient({ ...patient, contact: value || '' });
@@ -98,7 +150,7 @@ export default function App() {
         setPredictions([]);
         setError(null);
         setPatientHistory([]);
-        setLookupQuery('');
+        setLookupQuery(''); // Reset lookupQuery too
         setSearchSuggestions([]);
         setManualSymptomQuery('');
         setAutocompleteSuggestion('');
@@ -259,18 +311,6 @@ export default function App() {
         }
     };
 
-    const fetchPatientHistory = async (pId) => {
-        if (!pId) return;
-        try {
-            const response = await fetch(`${API_URL}/patients/${pId}/history/`);
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error || 'Failed to fetch history.');
-            setPatientHistory(data);
-        } catch (err) {
-            console.error("Fetch history error:", err);
-        }
-    };
-
     const handleVoiceSearch = () => {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SpeechRecognition) {
@@ -427,6 +467,60 @@ export default function App() {
     const renderStep = () => {
         // console.log("Current Patient Details in renderStep:", patientDetails); // For debugging
         switch (step) {
+            case 0:
+                return (
+                    <motion.div key="step0" {...animationProps}>
+                        <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 space-y-8 text-center">
+                            <div>
+                                <h2 className="text-3xl font-bold">Welcome to the AI Health Assistant</h2>
+                                <p className="text-slate-400 mt-2">How can we help you today?</p>
+                            </div>
+                            <div className="space-y-4">
+                                <button onClick={() => { resetAll(); setStep(1); }} className="w-full text-lg flex items-center justify-center gap-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-bold py-4 px-12 rounded-lg shadow-lg hover:shadow-cyan-500/50 transform hover:-translate-y-1 transition-all duration-300">
+                                    <Stethoscope /> Start New Diagnosis
+                                </button>
+                                <div className="pt-4 relative">
+                                    <h3 className="text-xl font-bold">Check Existing History</h3>
+                                    <p className="text-slate-400 mt-1 mb-4 text-sm">Enter a Patient Name or ID to view past checkups.</p>
+                                    <form onSubmit={handlePatientLookup} className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            placeholder="Search by Name or PAT-ID..."
+                                            value={lookupQuery}
+                                            onChange={(e) => setLookupQuery(e.target.value)} // Changed from handleSearchChange
+                                            className="flex-grow bg-slate-700/50 border border-slate-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-cyan-500 focus:outline-none transition"
+                                        />
+                                        <button type="submit" disabled={isLoading} className="flex items-center justify-center gap-2 bg-slate-600 text-white font-bold p-3 rounded-lg hover:bg-slate-700 transition-all duration-300 disabled:opacity-50">
+                                            {isLoading ? <Loader2 className="animate-spin" /> : <Search />}
+                                        </button>
+                                    </form>
+                                    <AnimatePresence>
+                                        {searchSuggestions.length > 0 && (
+                                            <motion.ul
+                                                initial={{ opacity: 0, y: -10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: -10 }}
+                                                className="absolute w-full bg-slate-700 border border-slate-600 rounded-lg mt-2 text-left z-10"
+                                            >
+                                                {searchSuggestions.map(s => (
+                                                    <li
+                                                        key={s.friendly_id}
+                                                        onClick={() => handleSuggestionClick(s)}
+                                                        className="p-3 hover:bg-slate-600 cursor-pointer border-b border-slate-600 last:border-b-0"
+                                                    >
+                                                        <p className="font-semibold">{s.name}</p>
+                                                        <p className="text-xs text-slate-400">{s.friendly_id}</p>
+                                                    </li>
+                                                ))}
+                                            </motion.ul>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+                            </div>
+                            {error && <p className="text-red-400 text-center mt-4">{error}</p>}
+                        </div>
+                    </motion.div>
+                );
             case 1:
                 return (
                     <motion.div key="step1" {...animationProps}>
@@ -466,7 +560,7 @@ export default function App() {
                 );
             case 2:
                 return (
-                     <motion.div key="step2" {...animationProps}>
+                    <motion.div key="step2" {...animationProps}>
                         <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 space-y-6">
                             <button onClick={() => setStep(1)} className="flex items-center gap-2 text-sm text-cyan-400 hover:text-cyan-300"><ArrowLeft size={16}/> Back to Patient Info</button>
                             <div className="flex justify-between items-start">
@@ -587,60 +681,6 @@ export default function App() {
                         </div>
                     </motion.div>
                 );
-            default:
-                return (
-                    <motion.div key="step0" {...animationProps}>
-                        <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 space-y-8 text-center">
-                            <div>
-                                <h2 className="text-3xl font-bold">Welcome to the AI Health Assistant</h2>
-                                <p className="text-slate-400 mt-2">How can we help you today?</p>
-                            </div>
-                            <div className="space-y-4">
-                                <button onClick={() => { resetAll(); setStep(1); }} className="w-full text-lg flex items-center justify-center gap-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-bold py-4 px-12 rounded-lg shadow-lg hover:shadow-cyan-500/50 transform hover:-translate-y-1 transition-all duration-300">
-                                    <Stethoscope /> Start New Diagnosis
-                                </button>
-                                <div className="pt-4 relative">
-                                    <h3 className="text-xl font-bold">Check Existing History</h3>
-                                    <p className="text-slate-400 mt-1 mb-4 text-sm">Enter a Patient Name or ID to view past checkups.</p>
-                                    <form onSubmit={handlePatientLookup} className="flex gap-2">
-                                        <input
-                                            type="text"
-                                            placeholder="Search by Name or PAT-ID..."
-                                            value={lookupQuery}
-                                            onChange={(e) => handleSearchChange(e.target.value)}
-                                            className="flex-grow bg-slate-700/50 border border-slate-600 rounded-lg px-4 py-3 focus:ring-2 focus:ring-cyan-500 focus:outline-none transition"
-                                        />
-                                        <button type="submit" disabled={isLoading} className="flex items-center justify-center gap-2 bg-slate-600 text-white font-bold p-3 rounded-lg hover:bg-slate-700 transition-all duration-300 disabled:opacity-50">
-                                            {isLoading ? <Loader2 className="animate-spin" /> : <Search />}
-                                        </button>
-                                    </form>
-                                    <AnimatePresence>
-                                        {searchSuggestions.length > 0 && (
-                                            <motion.ul
-                                                initial={{ opacity: 0, y: -10 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: -10 }}
-                                                className="absolute w-full bg-slate-700 border border-slate-600 rounded-lg mt-2 text-left z-10"
-                                            >
-                                                {searchSuggestions.map(s => (
-                                                    <li
-                                                        key={s.friendly_id}
-                                                        onClick={() => handleSuggestionClick(s)}
-                                                        className="p-3 hover:bg-slate-600 cursor-pointer border-b border-slate-600 last:border-b-0"
-                                                    >
-                                                        <p className="font-semibold">{s.name}</p>
-                                                        <p className="text-xs text-slate-400">{s.friendly_id}</p>
-                                                    </li>
-                                                ))}
-                                            </motion.ul>
-                                        )}
-                                    </AnimatePresence>
-                                </div>
-                            </div>
-                             {error && <p className="text-red-400 text-center mt-4">{error}</p>}
-                        </div>
-                    </motion.div>
-                );
         }
     };
 
@@ -671,42 +711,3 @@ export default function App() {
         </div>
     );
 }
-
-// Add this useEffect hook
-useEffect(() => {
-    const loadPatientFromQuery = async () => {
-        if (lookupQuery && !patientDetails) { // Only try if query exists and no patient is loaded
-            setIsLoading(true);
-            setError(null);
-            try {
-                const response = await fetch(`${API_URL}patients/search/`, { // Use search endpoint
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ query: lookupQuery }), // Send lookupQuery as search term
-                });
-                const data = await response.json();
-                if (!response.ok || data.length === 0) {
-                    throw new Error(data.error || 'Patient not found for lookup query.');
-                }
-                // Assuming search returns a list, take the first one or the most relevant
-                const foundPatient = data[0];
-                setPatientDetails(foundPatient);
-                setPatient(foundPatient);
-                fetchPatientHistory(foundPatient.id);
-                setStep(2); // Move to symptom input
-            } catch (err) {
-                setError(err.message);
-                console.error("Error loading patient from URL query:", err);
-            } finally {
-                setIsLoading(false);
-            }
-        }
-    };
-
-    // If the step is 0 (home) and there's a lookup query, try to load patient
-    if (step === 0 && lookupQuery) {
-        loadPatientFromQuery();
-    }
-}, [lookupQuery, patientDetails, step]); // Dependencies
-
-// ... (rest of your App.js code) ...
