@@ -7,7 +7,7 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-super-secret-key-for-local-dev'
-DEBUG = False
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 # Add this for deployment behind a proxy like Render
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -17,15 +17,10 @@ SECURE_SSL_REDIRECT = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 #SECURE_SSL_REDIRECT = True 
-ALLOWED_HOSTS = [
-    'https://ai-health-backend-xlho.onrender.com',
-]
-CSRF_TRUSTED_ORIGINS = [
-    'https://ai-health-backend-xlho.onrender.com', # <--- ADD THIS LINE
-    # If your frontend will be on a different Render/Netlify URL, add it here too:
-    # 'https://your-frontend-url.onrender.com',
-    # 'https://your-netlify-frontend-url.netlify.app',
-]
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',')
+if DEBUG:
+    ALLOWED_HOSTS += ['localhost', '127.0.0.1']
+CSRF_TRUSTED_ORIGINS = os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -80,13 +75,9 @@ DATABASES = {
 
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    'ai-health-backend-xlho.onrender.com',
-]
-
+CORS_ALLOWED_ORIGINS = os.environ.get('DJANGO_CORS_ALLOWED_ORIGINS', '').split(',')
+if DEBUG:
+    CORS_ALLOWED_ORIGINS += ['http://localhost:3000'] # Add your frontend dev URL
 # --- Email Configuration ---
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
