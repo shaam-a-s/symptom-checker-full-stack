@@ -8,6 +8,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-super-secret-key-for-local-dev'
 DEBUG = False
+# Add this for deployment behind a proxy like Render
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Re-enable SECURE_SSL_REDIRECT if it was commented out
+# It's good practice to have this in production
+SECURE_SSL_REDIRECT = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 #SECURE_SSL_REDIRECT = True 
