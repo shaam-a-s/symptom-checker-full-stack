@@ -10,7 +10,7 @@ SECRET_KEY = 'django-insecure-super-secret-key-for-local-dev'
 DEBUG = False
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True 
+#SECURE_SSL_REDIRECT = True 
 ALLOWED_HOSTS = [
     'https://ai-health-backend-xlho.onrender.com',
 ]
