@@ -8,7 +8,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-super-secret-key-for-local-dev'
 DEBUG = False
-ALLOWED_HOSTS = []
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True 
+ALLOWED_HOSTS = [
+    'https://ai-health-backend-xlho.onrender.com',
+]
+CSRF_TRUSTED_ORIGINS = [
+    'https://ai-health-backend-xlho.onrender.com', # <--- ADD THIS LINE
+    # If your frontend will be on a different Render/Netlify URL, add it here too:
+    # 'https://your-frontend-url.onrender.com',
+    # 'https://your-netlify-frontend-url.netlify.app',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
