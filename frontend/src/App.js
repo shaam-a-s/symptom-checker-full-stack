@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 
-const API_URL = 'https://ai-health-backend-xlho.onrender.com/api/';
+const API_URL = 'https://ai-health-backend-xlho.onrender.com/api';
 
 const AnimatedIcon = ({ icon: Icon, className }) => <Icon className={`transition-all duration-300 ease-in-out ${className}`} />;
 
