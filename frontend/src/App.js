@@ -671,3 +671,42 @@ export default function App() {
         </div>
     );
 }
+
+// Add this useEffect hook
+useEffect(() => {
+    const loadPatientFromQuery = async () => {
+        if (lookupQuery && !patientDetails) { // Only try if query exists and no patient is loaded
+            setIsLoading(true);
+            setError(null);
+            try {
+                const response = await fetch(`${API_URL}patients/search/`, { // Use search endpoint
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: lookupQuery }), // Send lookupQuery as search term
+                });
+                const data = await response.json();
+                if (!response.ok || data.length === 0) {
+                    throw new Error(data.error || 'Patient not found for lookup query.');
+                }
+                // Assuming search returns a list, take the first one or the most relevant
+                const foundPatient = data[0];
+                setPatientDetails(foundPatient);
+                setPatient(foundPatient);
+                fetchPatientHistory(foundPatient.id);
+                setStep(2); // Move to symptom input
+            } catch (err) {
+                setError(err.message);
+                console.error("Error loading patient from URL query:", err);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+    };
+
+    // If the step is 0 (home) and there's a lookup query, try to load patient
+    if (step === 0 && lookupQuery) {
+        loadPatientFromQuery();
+    }
+}, [lookupQuery, patientDetails, step]); // Dependencies
+
+// ... (rest of your App.js code) ...
