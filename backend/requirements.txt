@@ -7,3 +7,5 @@ numpy
 phonenumbers
 reportlab
 xhtml2pdf
+gunicorn
+whitenoise
